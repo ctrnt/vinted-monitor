@@ -1,0 +1,31 @@
+# Official Python Image
+FROM python:3.9-slim
+
+# Install Chrome and ChromeDriver
+ENV CHROMEDRIVER_VERSION=134.0.6998.117
+
+# Install Google Chrome
+RUN apt-get update && apt-get install -y wget && apt-get install -y zip
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
+
+# Install ChromeDriver
+RUN wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip \
+  && unzip chromedriver-linux64.zip && rm -dfr chromedriver-linux64.zip \
+  && mv /chromedriver-linux64/chromedriver /usr/bin/chromedriver \
+  && chmod +x /usr/bin/chromedriver
+
+# Install Python dependencies
+RUN pip install confluent-kafka python-dotenv requests selenium psycopg2-binary
+
+# Copy the project files into the container
+COPY ./scripts/scraper.py /app/scripts/scraper.py
+COPY ./scripts/consumer.py /app/scripts/consumer.py
+COPY ./scripts/postgresdb.py /app/scripts/postgresdb.py
+COPY ./config /app/config
+
+# Set the working directory
+WORKDIR /app
+
+# Start the consumer when the container starts
+ENTRYPOINT ["python", "-m", "scripts.consumer"]

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vintedbot-consumer
+  labels:
+    app: vintedbot-consumer
+spec:
+  replicas: 2 # number of pods
+  selector:
+    matchLabels:
+      app: vintedbot-consumer
+  template:
+    metadata:
+      labels:
+        app: vintedbot-consumer
+    spec:
+      containers:
+      - name: vintedbot-consumer
+        image: ctrnt/vintedbot_consumer:latest
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: TOPIC_NAME
+          value: "vinted-topic"
+        - name: GROUP_ID
+          value: "scraping_group"
+        resources:
+          requests:
+            cpu: "1"
+            memory: "1Gi"

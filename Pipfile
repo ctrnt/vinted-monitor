@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+python-dotenv = "*"
+confluent-kafka = "*"
+apache-airflow = "*"
+selenium = "*"
+brotli = "*"
+discord = {py = "*"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.21"
